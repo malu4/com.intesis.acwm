@@ -4,7 +4,7 @@
   "description": "Homey app to control Intesis wifi airconditioners",
   "main": "app.js",
   "dependencies": {
-     "acwm-api": "1.0.0"
+    "acwm-api": "1.0.0"
   },
   "devDependencies": {},
   "scripts": {
@@ -19,5 +19,9 @@
   "bugs": {
     "url": "https://github.com/nlrb/com.intesis.acwm/issues"
   },
-  "homepage": "https://github.com/nlrb/com.intesis.acwm#readme"
+  "homepage": "https://github.com/nlrb/com.intesis.acwm#readme",
+  "homey": {
+    "compatibility": ">=3.0.0",
+    "version": "3.0.0"
+  }
 }
