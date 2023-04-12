@@ -1,45 +1,41 @@
 'use strict'
 
-const Homey = require('homey')
+const { Driver } = require('homey')
 const acwm = require('acwm-api')
 
-class AircoDriver extends Homey.Driver {
+class AircoDevice extends Driver {
 
-	onInit() {
-  }
+  async onInit() {
+    this.log('AircoDevice has been inited')
 
-  onPair(socket) {
-    this.log('Pairing started')
+    this.registerFlowCard('onoff', this.onPowerOnoff.bind(this))
+    this.registerFlowCard('thermostat_mode_mh', this.onThermostatMode.bind(this))
+    this.registerFlowCard('fan_rate_mh', this.onFanRate.bind(this))
+    this.registerFlowCard('vane_updown_position_mh', this.onVaneUpDownDirection.bind(this))
+    this.registerFlowCard('target_temperature', this.onSetpoint.bind(this))
 
-    socket.emit('authorized')
-
-    socket.on('check', async (data, callback) => {
-      this.log('Checking', data)
-      try {
-        let airco = new acwm(data.ip)
-        let result = await airco.getInfo()
-        let login = await airco.login(data.username, data.password)
-
-        let device = {
-          name: result.ownSSID,
-          data: { id: result.sn },
-          settings: {
-            ip: data.ip,
-            username: data.username,
-            password: data.password,
-            interval: 10,
-            model: result.deviceModel,
-            serial: result.sn
-          }
-        }
-        callback(null, device)
-      } catch(err) {
-        this.error(err.error || err)
-        callback(err.error || err, null)
-      }
+    this.on('settings', this.onSettings.bind(this))
+    this.on('ready', () => {
+      this.setPollTimer(this.interval)
     })
   }
 
+  async registerFlowCard(capability, method) {
+    this.homey.flow.getDeviceTriggerCard(capability)
+      .registerRunListener(method)
+  }
+
+  async onSettings(newSettings) {
+    const oldSettings = this.getSettings()
+    const changedKeys = Object.keys(newSettings)
+
+    this.log(changedKeys)
+
+    // Rest of the onSettings code...
+  }
+
+  // Rest of the class methods...
 }
 
-module.exports = AircoDriver
+module.exports = AircoDevice
+
