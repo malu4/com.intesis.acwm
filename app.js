@@ -1,12 +1,12 @@
 'use strict';
 
-const Homey = require('homey');
+const { App } = require('homey');
 
-class IntensisACWMApp extends Homey.App {
+class IntensisACWMApp extends App {
 
-	onInit() {
-		this.log('IntensisACWMApp is running...');
-	}
+  async onInit() {
+    this.log('IntensisACWMApp is running...');
+  }
 
 }
 
